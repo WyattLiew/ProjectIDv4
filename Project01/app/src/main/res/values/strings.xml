@@ -1,6 +1,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Project Management</string>
-    <string name="tab_text_1">Main</string>
+    <string name="tab_text_1">Home</string>
     <string name="tab_text_2">Project</string>
     <string name="tab_text_3">Pending</string>
     <string name="action_settings">Settings</string>
@@ -88,7 +88,7 @@
     <string name="keep_editing">Keep Editing</string>
 
     <!--Dialog message when user is deleting the data [CHAR LIMIT=NONE] -->
-    <string name="delete_dialog_msg">Are you sure you want to delete this data?</string>
+    <string name="delete_dialog_msg">Are you sure that you want to permanently delete the selected item?</string>
 
     <!-- Dialog button text for the option to discard a user's changes [CHAR LIMIT=20] -->
     <string name="delete">Yes</string>

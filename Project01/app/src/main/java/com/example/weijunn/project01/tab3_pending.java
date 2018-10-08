@@ -81,8 +81,6 @@ public class tab3_pending extends Fragment {
                 listAdapter.add(dataProvider);
                 listAdapter.notifyDataSetChanged();
                 listView.invalidateViews();
-                Log.d(TAG,"The row id is : " +rowId);
-
             }
             while (cursor.moveToNext());
             listAdapter.notifyDataSetChanged();
