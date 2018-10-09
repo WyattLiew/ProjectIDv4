@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="100dp"
+            android:layout_width="120dp"
             android:layout_height="100dp"
             android:scaleType="fitXY"
             android:src="@mipmap/ic_launcher_round"
@@ -30,12 +30,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="@string/project_location_text" />
+                    android:text="@string/project_location_text"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/project_location"
-                    android:id="@+id/project_location" />
+                    android:id="@+id/project_location"/>
             </TableRow>
         </TableLayout>
         <TableLayout

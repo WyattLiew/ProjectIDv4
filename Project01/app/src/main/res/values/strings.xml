@@ -65,17 +65,16 @@
     For report summary projectEditor.java
     -->
 
-    <string name="report_summary_location">Project location: <xliff:g id="location" example="Singapore">%s</xliff:g></string>
-    <string name="report_summary_projManager">Project manager: <xliff:g id="projManager" example="Abang">%s</xliff:g></string>
-    <string name="report_summary_date">Inspection date: <xliff:g id="date" example="11/12/2018">%s</xliff:g></string>
-    <string name="report_summary_defect_1">1. <xliff:g id="defect1" example="issues">%s</xliff:g></string>
-    <string name="report_summary_defect_2">2. <xliff:g id="defect2" example="issues">%s</xliff:g></string>
-    <string name="report_summary_defect_3">3. <xliff:g id="defect3" example="issues">%s</xliff:g></string>
-    <string name="report_summary_comments">Comments: <xliff:g id="comment" example="comments">%s</xliff:g></string>
+    <string name="report_summary_location">Project location: <xliff:g example="Singapore" id="location">%s</xliff:g></string>
+    <string name="report_summary_projManager">Project manager: <xliff:g example="Abang" id="projManager">%s</xliff:g></string>
+    <string name="report_summary_date">Inspection date: <xliff:g example="11/12/2018" id="date">%s</xliff:g></string>
+    <string name="report_summary_defect_1">1. <xliff:g example="issues" id="defect1">%s</xliff:g></string>
+    <string name="report_summary_defect_2">2. <xliff:g example="issues" id="defect2">%s</xliff:g></string>
+    <string name="report_summary_defect_3">3. <xliff:g example="issues" id="defect3">%s</xliff:g></string>
+    <string name="report_summary_comments">Comments: <xliff:g example="comments" id="comment">%s</xliff:g></string>
     <string name="report_summary_Thank_you">Thank you</string>
     <string name="report_summary_description">Description of defect(s) : </string>
     <string name="action_update">action_update</string>
-
 
 
     <!--Dialog message when user is leaving editor but hasn't saved changes [CHAR LIMIT=NONE] -->

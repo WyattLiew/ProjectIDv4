@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
+    android:id="@+id/swipe"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <ListView
         android:id="@+id/pending_list"
         android:layout_width="match_parent"
@@ -52,5 +54,6 @@
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="#A2AAB0" />
     </RelativeLayout>
-
 </RelativeLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

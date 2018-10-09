@@ -7,12 +7,10 @@ import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 public class tab1_main extends Fragment implements View.OnClickListener{
 
-    private CardView pendingCard;
+    private CardView pendingCard,projectCard;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -23,6 +21,9 @@ public class tab1_main extends Fragment implements View.OnClickListener{
         pendingCard =(CardView)rootView.findViewById(R.id.pendingCard);
         pendingCard.setOnClickListener(this);
 
+        projectCard = (CardView)rootView.findViewById(R.id.projectCard);
+        projectCard.setOnClickListener(this);
+
         return rootView;
     }
 
@@ -32,7 +33,11 @@ public class tab1_main extends Fragment implements View.OnClickListener{
 
         switch (v.getId()) {
             case R.id.pendingCard:
-                intent = new Intent(getActivity(), projectEditor.class);
+                intent = new Intent(getActivity(), defectEditor.class);
+                startActivity(intent);
+                break;
+            case R.id.projectCard:
+                intent = new Intent(getActivity(),projectEditor.class);
                 startActivity(intent);
                 break;
                 default:
