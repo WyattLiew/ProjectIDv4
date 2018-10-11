@@ -39,27 +39,6 @@ public class tab3_pending extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.tab3_pending, container, false);
 
-        final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe);
-        swipeView.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
-        swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeView.setRefreshing(true);
-                initData();
-                listView.setAdapter(listAdapter);
-                listView.invalidateViews();
-                (new Handler()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeView.setRefreshing(false);
-                        initData();
-                        listView.setAdapter(listAdapter);
-                        listView.invalidateViews();
-                    }
-                },3000);
-            }
-        });
-
         listView = (ListView) rootView.findViewById(R.id.pending_list);
 
         // Only display without data
@@ -70,7 +49,7 @@ public class tab3_pending extends Fragment {
         sqLiteDatabase = projectDbHelper.getReadableDatabase();
         cursor = projectDbHelper.viewData();
         listAdapter = new ListAdapter(getActivity().getApplicationContext(), R.layout.item_project);
-        //listAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
         listView.setAdapter(listAdapter);
         listView.invalidateViews();
 
@@ -82,6 +61,7 @@ public class tab3_pending extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String rowID = ((TextView) view.findViewById(R.id.project_id)).getText().toString();
                 String pos = ((TextView) view.findViewById(R.id.project_location)).getText().toString();
                 String conName = ((TextView) view.findViewById(R.id.project_person)).getText().toString();
                 String conNum = ((TextView) view.findViewById(R.id.project_number)).getText().toString();
@@ -103,7 +83,9 @@ public class tab3_pending extends Fragment {
 
                 int HideMenu = 1;
 
-                Cursor data = projectDbHelper.getItemID(pos); //get the id associated with that name
+                Cursor data = projectDbHelper.getItemID(rowID); //get the id associated with that name
+                Toast.makeText(getActivity(),"This row id is: "+rowID,Toast.LENGTH_SHORT).show();
+
                 int itemID = -1;
                 while (data.moveToNext()) {
                     itemID = data.getInt(0);
@@ -138,9 +120,9 @@ public class tab3_pending extends Fragment {
 
             do {
                 String location, name, number, projManager, projectDate, defect1, defect2, defect3, comments;
-                int rowId;
+                String rowId;
                 byte[] img;
-                rowId = cursor.getInt(0);
+                rowId = cursor.getString(0);
                 name = cursor.getString(1);
                 location = cursor.getString(2);
                 number = cursor.getString(3);
@@ -153,11 +135,12 @@ public class tab3_pending extends Fragment {
                 img = cursor.getBlob(10);
                 DataProvider dataProvider = new DataProvider(rowId, location, name, number, projManager, projectDate, defect1, defect2, defect3, comments, img);
                 listAdapter.add(dataProvider);
-                // listAdapter.notifyDataSetChanged();
+                listAdapter.notifyDataSetChanged();
                 listView.invalidateViews();
                 Log.d(TAG, "The row id is :   " + rowId);
             }
             while (cursor.moveToNext());
+            listAdapter.notifyDataSetChanged();
             listView.invalidateViews();
 
         }

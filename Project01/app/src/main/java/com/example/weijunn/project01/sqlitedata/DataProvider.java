@@ -11,7 +11,7 @@ public class DataProvider {
     private String comments;
     private String projManager;
     private String date;
-    private int id;
+    private String id;
 
     public String getLocation() {
         return location;
@@ -93,15 +93,15 @@ public class DataProvider {
         this.date = date;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public DataProvider(int id,String location, String name, String number, String projManager, String date, String defect1, String defect2, String defect3, String comments, byte[] img){
+    public DataProvider(String id,String location, String name, String number, String projManager, String date, String defect1, String defect2, String defect3, String comments, byte[] img){
         this.img = img;
         this.location = location;
         this.name =name;

@@ -26,7 +26,7 @@ public class ListAdapter extends ArrayAdapter {
 
     static class LAyoutHandler{
 
-        TextView LOCATION,NAME,NUMBER,PROJMANAGER,PROJECT_DATE,DEFECT1,DEFECT2,DEFECT3,COMMENTS;
+        TextView ID,LOCATION,NAME,NUMBER,PROJMANAGER,PROJECT_DATE,DEFECT1,DEFECT2,DEFECT3,COMMENTS;
         ImageView IMG;
     }
 
@@ -57,6 +57,7 @@ public class ListAdapter extends ArrayAdapter {
             LayoutInflater layoutInflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row=layoutInflater.inflate(R.layout.item_project,parent,false);
             lAyoutHandler = new LAyoutHandler();
+            lAyoutHandler.ID = (TextView)row.findViewById(R.id.project_id);
             lAyoutHandler.PROJMANAGER = (TextView) row.findViewById(R.id.project_manager);
             lAyoutHandler.PROJECT_DATE = (TextView)row.findViewById(R.id.project_date);
             lAyoutHandler.DEFECT1 =(TextView)row.findViewById(R.id.project_defect_1);
@@ -75,6 +76,7 @@ public class ListAdapter extends ArrayAdapter {
         DataProvider dataProvider = (DataProvider)this.getItem(position);
 
         //lAyoutHandler.IMG.setImageBitmap(Untils.getImage(dataProvider.getImg()));
+        lAyoutHandler.ID.setText(dataProvider.getId());
         lAyoutHandler.IMG.setImageBitmap(imageEfficiently.decodeSampledBitmapFromResource(dataProvider.getImg(),100,100));
         lAyoutHandler.LOCATION.setText(dataProvider.getLocation());
         lAyoutHandler.NAME.setText(dataProvider.getName());

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import static com.example.weijunn.project01.sqlitedata.projectContract.*;
 
 public class ProjectDbHelper extends SQLiteOpenHelper {
 
@@ -52,6 +53,17 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
             + COLUMN_DEFECT_COMMENTS + " TEXT,"
             + COLUMN_DEFECT_IMG + " BLOB" + ")";
 
+    // Project create table statement
+    private String CREATE_TABLE_PROJECT = "CREATE TABLE " + ProjectEntry.TABLE_NAME_PROJECT + "("
+            + ProjectEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + ProjectEntry.COLUMN_PROJECT_TITLE + " TEXT NOT NULL,"
+            + ProjectEntry.COLUMN_PROJECT_DESCRIPTION + " TEXT,"
+            + ProjectEntry.COLUMN_CONTACT_NAME + " TEXT NOT NULL,"
+            + ProjectEntry.COLUMN_CONTACT_NUMBER + " INTEGER NOT NULL,"
+            + ProjectEntry.COLUMN_PROJECT_DATE + " TEXT NOT NULL,"
+            + ProjectEntry.COLUMN_PROJECT_LOCATION + " TEXT NOT NULL,"
+            + ProjectEntry.COLUMN_PROJECT_NOTES + " TEXT" + ")";
+
     public ProjectDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -59,18 +71,22 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_PENDING);
+        db.execSQL(CREATE_TABLE_PROJECT);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_PENDING);
+        db.execSQL("DROP TABLE IF EXISTS " + ProjectEntry.TABLE_NAME_PROJECT);
 
         //create new tables
         onCreate(db);
     }
 
-    public void insert_pending(String location, String conName, int conNum, String projManager,String date,String defect1, String defect2, String defect3, String comments, byte[] image) throws SQLException{
+    /** pending Editor Start> **/
+
+    public void insert_pending(String location, String conName, String conNum, String projManager,String date,String defect1, String defect2, String defect3, String comments, byte[] image) throws SQLException{
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -89,7 +105,7 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void update_pending(int id,String location, String conName, int conNum, String projManager,String date,String defect1, String defect2, String defect3, String comments, byte[] image) throws SQLException{
+    public void update_pending(int id,String location, String conName, String conNum, String projManager,String date,String defect1, String defect2, String defect3, String comments, byte[] image) throws SQLException{
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -126,9 +142,37 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
     public Cursor getItemID(String pos){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME_PENDING +
-                " WHERE " + COLUMN_PROJECT_LOCATION + " = '" + pos + "'";
+                " WHERE " + _ID + " = '" + pos + "'";
         Cursor data = db.rawQuery(query, null);
         return data;
+    }
+
+    /** pending Editor End> **/
+
+    /** Project Editor Start> **/
+    public void insert_project(String location, String conName, int conNum,String date,String description,String title,String note) throws SQLException{
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(ProjectEntry.COLUMN_PROJECT_TITLE, title);
+        values.put(ProjectEntry.COLUMN_PROJECT_DESCRIPTION, description);
+        values.put(ProjectEntry.COLUMN_PROJECT_DATE, date);
+        values.put(ProjectEntry.COLUMN_PROJECT_LOCATION, location);
+        values.put(ProjectEntry.COLUMN_CONTACT_NAME, conName);
+        values.put(ProjectEntry.COLUMN_CONTACT_NUMBER, conNum);
+        values.put(ProjectEntry.COLUMN_PROJECT_NOTES, note);
+
+
+        db.insert(ProjectEntry.TABLE_NAME_PROJECT,null,values);
+        db.close();
+    }
+
+    public Cursor viewProjectData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "Select * from " + ProjectEntry.TABLE_NAME_PROJECT;
+        Cursor cursor = db.rawQuery(query,null);
+
+        return cursor;
     }
 
 }

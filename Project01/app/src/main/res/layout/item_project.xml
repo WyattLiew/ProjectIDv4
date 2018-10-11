@@ -84,6 +84,11 @@
                     android:layout_height="wrap_content"
                     android:text="@string/project_manager"
                     android:id="@+id/project_manager"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/project_id"
+                    android:visibility="invisible"/>
             </TableRow>
         </TableLayout>
 

@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -75,6 +76,7 @@ public class defectEditor extends AppCompatActivity {
 
     // Date
     private DatePickerDialog.OnDateSetListener mDateSetListener;
+    String date ="Select a date";
 
     // Update data
     private String selectedLocation , selectedComments, selectedName,selectedNum,selectedprojManager,selectedprojDate,selectedDefect1,selectedDefect2,selectedDefect3;
@@ -197,7 +199,9 @@ public class defectEditor extends AppCompatActivity {
                 //final Bitmap bmp = (Bitmap) bundle.get("data");
                 //projectImage.setImageBitmap(bmp);
 
+
                 projectImage.setImageURI(Uri.parse(imageFilePath));
+                projectImage.setMinimumHeight(512);
                 Log.e("Attachment Path:", imageFilePath);
 
                 Bitmap imgBitmap = ((BitmapDrawable)projectImage.getDrawable()).getBitmap();
@@ -382,7 +386,7 @@ public class defectEditor extends AppCompatActivity {
                             String locationString = mProjectLocation.getText().toString().trim();
                             String conNameString = mContactName.getText().toString().trim();
                             String conNumString = mContactNumber.getText().toString().trim();
-                            int conNumInt = Integer.parseInt(conNumString);
+                            //int conNumInt = Integer.parseInt(conNumString);
                             String projManager = mProjectManager.getText().toString().trim();
                             String projectDate = mProjectDate.getText().toString().trim();
                             String defect1String = mDefect1.getText().toString().trim();
@@ -390,26 +394,35 @@ public class defectEditor extends AppCompatActivity {
                             String defect3String = mDefect3.getText().toString().trim();
                             String penCommentString = mPendingComment.getText().toString().trim();
                             Bitmap imgBitmap = ((BitmapDrawable)projectImage.getDrawable()).getBitmap();
-                            mDbHelper.insert_pending(locationString,conNameString,conNumInt,projManager,projectDate,defect1String,defect2String,defect3String,penCommentString, Untils.getBytes(imgBitmap));
 
-                            reportMessage = createReportSummary(locationString,conNameString,projManager,projectDate,defect1String,defect2String,defect3String,penCommentString);
-                            Intent emailIntent = new Intent (Intent.ACTION_SEND);
-                            //emailIntent.setData(Uri.parse("mailto:"));
-                            emailIntent.setType("image/*");
-                            //Uri imageUri = Uri.parse("Path:: " + imageFilePath);
-                            emailIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(pic));
-                            emailIntent.putExtra(Intent.EXTRA_SUBJECT,"Reports");
-                            emailIntent.putExtra(Intent.EXTRA_TEXT,reportMessage);
-                            if (emailIntent.resolveActivity(getPackageManager())!=null){
-                                startActivity(emailIntent);
+                            if (locationString.length() ==0 || conNameString.length() ==0 ||conNumString.length() ==0 || projManager.length() ==0 || projectDate.length() ==0 ) {
+                                checkEmptyEditText(locationString, conNameString, conNumString, projManager);
+                            }else if(imgBitmap == null){
+                                Toast.makeText(defectEditor.this,"Image cannot be null.",Toast.LENGTH_SHORT).show();
+                            }else if(projectDate.matches(date)){
+                                Toast.makeText(defectEditor.this,"Please select a date.",Toast.LENGTH_SHORT).show();
+                            } else {
+                                mDbHelper.insert_pending(locationString, conNameString, conNumString, projManager, projectDate, defect1String, defect2String, defect3String, penCommentString, Untils.getBytes(imgBitmap));
+
+                                reportMessage = createReportSummary(locationString, conNameString, projManager, projectDate, defect1String, defect2String, defect3String, penCommentString);
+                                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                                //emailIntent.setData(Uri.parse("mailto:"));
+                                emailIntent.setType("image/*");
+                                //Uri imageUri = Uri.parse("Path:: " + imageFilePath);
+                                emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(pic));
+                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Reports");
+                                emailIntent.putExtra(Intent.EXTRA_TEXT, reportMessage);
+                                if (emailIntent.resolveActivity(getPackageManager()) != null) {
+                                    startActivity(emailIntent);
+                                }
+                                finish();
                             }
-                            finish();
 
                         } else if (items[which].equals("Save only")) {
                             String locationString = mProjectLocation.getText().toString().trim();
                             String conNameString = mContactName.getText().toString().trim();
                             String conNumString = mContactNumber.getText().toString().trim();
-                            int conNumInt = Integer.parseInt(conNumString);
+                            //int conNumInt = Integer.parseInt(conNumString);
                             String projManager = mProjectManager.getText().toString().trim();
                             String projectDate = mProjectDate.getText().toString().trim();
                             String defect1String = mDefect1.getText().toString().trim();
@@ -417,8 +430,19 @@ public class defectEditor extends AppCompatActivity {
                             String defect3String = mDefect3.getText().toString().trim();
                             String penCommentString = mPendingComment.getText().toString().trim();
                             Bitmap imgBitmap = ((BitmapDrawable)projectImage.getDrawable()).getBitmap();
-                            mDbHelper.insert_pending(locationString,conNameString,conNumInt,projManager,projectDate,defect1String,defect2String,defect3String,penCommentString, Untils.getBytes(imgBitmap));
-                            finish();
+
+
+                           if (locationString.length() ==0 || conNameString.length() ==0 ||conNumString.length() ==0 || projManager.length() ==0 || projectDate.length() ==0 ) {
+                               checkEmptyEditText(locationString, conNameString, conNumString, projManager);
+                           }else if(imgBitmap == null){
+                               Toast.makeText(defectEditor.this,"Image cannot be null.",Toast.LENGTH_SHORT).show();
+                           }else if(projectDate.matches(date)){
+                               Toast.makeText(defectEditor.this,"Please select a date.",Toast.LENGTH_SHORT).show();
+                            }
+                           else{
+                               mDbHelper.insert_pending(locationString, conNameString, conNumString, projManager, projectDate, defect1String, defect2String, defect3String, penCommentString, Untils.getBytes(imgBitmap));
+                               finish();
+                           }
 
 
                         } else if (items[which].equals("Cancel")) {
@@ -441,7 +465,7 @@ public class defectEditor extends AppCompatActivity {
                             String locationString = mProjectLocation.getText().toString().trim();
                             String conNameString = mContactName.getText().toString().trim();
                             String conNumString = mContactNumber.getText().toString().trim();
-                            int conNumInt = Integer.parseInt(conNumString);
+                            //int conNumInt = Integer.parseInt(conNumString);
                             String projManager = mProjectManager.getText().toString().trim();
                             String projectDate = mProjectDate.getText().toString().trim();
                             String defect1String = mDefect1.getText().toString().trim();
@@ -449,41 +473,52 @@ public class defectEditor extends AppCompatActivity {
                             String defect3String = mDefect3.getText().toString().trim();
                             String penCommentString = mPendingComment.getText().toString().trim();
                             Bitmap imgBitmap = ((BitmapDrawable)projectImage.getDrawable()).getBitmap();
-                            mDbHelper.update_pending(selectedID,locationString,conNameString,conNumInt,projManager,projectDate,defect1String,defect2String,defect3String,penCommentString, Untils.getBytes(imgBitmap));
 
-                            try {
-                                File root = Environment.getExternalStorageDirectory();
-                                if (root.canWrite()){
-                                    pic = new File(root, "pic.png");
-                                    FileOutputStream out = new FileOutputStream(pic);
-                                    selectedImage.compress(Bitmap.CompressFormat.PNG, 100, out);
-                                    out.flush();
-                                    out.close();
+                            if (locationString.length() ==0 || conNameString.length() ==0 ||conNumString.length() ==0 || projManager.length() ==0 || projectDate.length() ==0 ) {
+                                checkEmptyEditText(locationString, conNameString, conNumString, projManager);
+                            }else if(imgBitmap == null){
+                                Toast.makeText(defectEditor.this,"Image cannot be null.",Toast.LENGTH_SHORT).show();
+                            }else if(projectDate.matches(date)){
+                                Toast.makeText(defectEditor.this,"Please select a date.",Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+
+                                mDbHelper.update_pending(selectedID, locationString, conNameString, conNumString, projManager, projectDate, defect1String, defect2String, defect3String, penCommentString, Untils.getBytes(imgBitmap));
+
+                                try {
+                                    File root = Environment.getExternalStorageDirectory();
+                                    if (root.canWrite()) {
+                                        pic = new File(root, "pic.png");
+                                        FileOutputStream out = new FileOutputStream(pic);
+                                        selectedImage.compress(Bitmap.CompressFormat.PNG, 100, out);
+                                        out.flush();
+                                        out.close();
+                                    }
+                                } catch (IOException e) {
+                                    Log.e("BROKEN", "Could not write file " + e.getMessage());
                                 }
-                            } catch (IOException e) {
-                                Log.e("BROKEN", "Could not write file " + e.getMessage());
-                            }
 
-                            reportMessage = createReportSummary(locationString,conNameString,projManager,projectDate,defect1String,defect2String,defect3String,penCommentString);
-                            Intent emailIntent = new Intent (Intent.ACTION_SEND);
-                            //emailIntent.setData(Uri.parse("mailto:"));
-                            emailIntent.setType("image/*");
-                            //Uri imageUri = Uri.parse("Path:: " + imageFilePath);
-                            emailIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(pic));
-                            emailIntent.putExtra(Intent.EXTRA_SUBJECT,"Reports");
-                            emailIntent.putExtra(Intent.EXTRA_TEXT,reportMessage);
-                            if (emailIntent.resolveActivity(getPackageManager())!=null){
-                                startActivity(emailIntent);
-                            }else{
-                                Toast.makeText(defectEditor.this, "There are no email clients installed.",Toast.LENGTH_SHORT).show();
+                                reportMessage = createReportSummary(locationString, conNameString, projManager, projectDate, defect1String, defect2String, defect3String, penCommentString);
+                                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                                //emailIntent.setData(Uri.parse("mailto:"));
+                                emailIntent.setType("image/*");
+                                //Uri imageUri = Uri.parse("Path:: " + imageFilePath);
+                                emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(pic));
+                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Reports");
+                                emailIntent.putExtra(Intent.EXTRA_TEXT, reportMessage);
+                                if (emailIntent.resolveActivity(getPackageManager()) != null) {
+                                    startActivity(emailIntent);
+                                } else {
+                                    Toast.makeText(defectEditor.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                                }
+                                finish();
                             }
-                            finish();
 
                         } else if (items_update[which].equals("Update only")) {
                             String locationString = mProjectLocation.getText().toString().trim();
                             String conNameString = mContactName.getText().toString().trim();
                             String conNumString = mContactNumber.getText().toString().trim();
-                            int conNumInt = Integer.parseInt(conNumString);
+                            //int conNumInt = Integer.parseInt(conNumString);
                             String projManager = mProjectManager.getText().toString().trim();
                             String projectDate = mProjectDate.getText().toString().trim();
                             String defect1String = mDefect1.getText().toString().trim();
@@ -491,8 +526,19 @@ public class defectEditor extends AppCompatActivity {
                             String defect3String = mDefect3.getText().toString().trim();
                             String penCommentString = mPendingComment.getText().toString().trim();
                             Bitmap imgBitmap = ((BitmapDrawable)projectImage.getDrawable()).getBitmap();
-                            mDbHelper.update_pending(selectedID,locationString,conNameString,conNumInt,projManager,projectDate,defect1String,defect2String,defect3String,penCommentString, Untils.getBytes(imgBitmap));
-                            finish();
+
+                            if (locationString.length() ==0 || conNameString.length() ==0 ||conNumString.length() ==0 || projManager.length() ==0 || projectDate.length() ==0 ) {
+                                checkEmptyEditText(locationString, conNameString, conNumString, projManager);
+                            }else if(imgBitmap == null){
+                                Toast.makeText(defectEditor.this,"Image cannot be null.",Toast.LENGTH_SHORT).show();
+                            }else if(projectDate.matches(date)){
+                                Toast.makeText(defectEditor.this,"Please select a date.",Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                mDbHelper.update_pending(selectedID,locationString,conNameString,conNumString,projManager,projectDate,defect1String,defect2String,defect3String,penCommentString, Untils.getBytes(imgBitmap));
+                                finish();
+                            }
+
 
                         } else if (items_update[which].equals("Cancel")) {
                             dialog.dismiss();
@@ -681,6 +727,26 @@ public class defectEditor extends AppCompatActivity {
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void checkEmptyEditText(String locationString,String conNameString,String conNumInt,String projManager){
+
+        if(TextUtils.isEmpty(locationString)){
+            mProjectLocation.setError("Your message");
+            return;
+        }
+        if(TextUtils.isEmpty(conNameString)){
+            mContactName.setError("Your message");
+            return;
+        }
+        if(TextUtils.isEmpty(conNumInt)){
+            mContactNumber.setError("Your message");
+            return;
+        }
+        if(TextUtils.isEmpty(projManager)){
+            mProjectManager.setError("Your message");
+            return;
+        }
     }
 
     @Override
