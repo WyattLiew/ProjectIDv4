@@ -17,4 +17,10 @@
         <item>@string/project_type2</item>
         <item>@string/project_type3</item>
     </string-array>
+
+    <string-array name="array_projectStatus_options">
+        <item>@string/projectAddOn_completed</item>
+        <item>@string/projectAddOn_InProgress</item>
+        <item>@string/projectAddOn_Deferred</item>
+    </string-array>
 </resources>

@@ -57,6 +57,8 @@ import java.util.Locale;
 
 public class defectEditor extends AppCompatActivity {
 
+    private static final String TAG = "defectEditor";
+
     EditText mProjectLocation, mContactName, mContactNumber, mDefect1, mDefect2, mDefect3, mPendingComment, mProjectManager;
     TextView mProjectDate;
     ProjectDbHelper mDbHelper;
@@ -536,7 +538,8 @@ public class defectEditor extends AppCompatActivity {
                             }
                             else{
                                 mDbHelper.update_pending(selectedID,locationString,conNameString,conNumString,projManager,projectDate,defect1String,defect2String,defect3String,penCommentString, Untils.getBytes(imgBitmap));
-                                finish();
+                                Intent intent = new Intent(defectEditor.this,MainActivity.class);
+                                startActivity(intent);
                             }
 
 
@@ -594,6 +597,8 @@ public class defectEditor extends AppCompatActivity {
         selectedComments = receivedIntent.getStringExtra("comments");
         //selectedImage = receivedIntent.getParcelableExtra("projImage");
         HideMenu = receivedIntent.getIntExtra("HideMenu",0);
+
+        Log.d(TAG,"Selected ID is: "+selectedID);
 
         if(HideMenu ==1) {
             byte[] bytes = receivedIntent.getByteArrayExtra("projImage");

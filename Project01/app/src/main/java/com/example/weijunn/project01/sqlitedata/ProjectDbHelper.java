@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import static com.example.weijunn.project01.sqlitedata.projectAddOnContract.*;
 import static com.example.weijunn.project01.sqlitedata.projectContract.*;
 
 public class ProjectDbHelper extends SQLiteOpenHelper {
@@ -64,6 +65,15 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
             + ProjectEntry.COLUMN_PROJECT_LOCATION + " TEXT NOT NULL,"
             + ProjectEntry.COLUMN_PROJECT_NOTES + " TEXT" + ")";
 
+    // Project add on create table statement
+    private String CREATE_TABLE_PROJECT_ADD_ON = "CREATE TABLE " + ProjectAddOnEntry.TABLE_NAME_PROJECT + "("
+            + ProjectAddOnEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + ProjectAddOnEntry.COLUMN_PROJECT_Status + " INTEGER NOT NULL,"
+            + ProjectAddOnEntry.COLUMN_PROJECT_DATE + " TEXT NOT NULL,"
+            + ProjectAddOnEntry.COLUMN_PROJECT_NOTES + " TEXT,"
+            + ProjectAddOnEntry.COLUMN_ADDON_IMG + " BLOB,"
+            + ProjectAddOnEntry.COLUMN_PROJECT_ID + " INTEGER" + ")";
+
     public ProjectDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -72,6 +82,7 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_PENDING);
         db.execSQL(CREATE_TABLE_PROJECT);
+        db.execSQL(CREATE_TABLE_PROJECT_ADD_ON);
     }
 
     @Override
@@ -79,6 +90,7 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
         //on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_PENDING);
         db.execSQL("DROP TABLE IF EXISTS " + ProjectEntry.TABLE_NAME_PROJECT);
+        db.execSQL("DROP TABLE IF EXISTS " + ProjectAddOnEntry.TABLE_NAME_PROJECT);
 
         //create new tables
         onCreate(db);
@@ -173,6 +185,36 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query,null);
 
         return cursor;
+    }
+    public Cursor getProjectItemID(long pos){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + ProjectEntry.TABLE_NAME_PROJECT +
+                " WHERE " + ProjectEntry._ID + " = '" + pos + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
+    /** Project Editor END> **/
+
+    /** Project Addon Start> **/
+    public void insert_projectAddOn(int status,String date,String note,byte[] image,int id) throws SQLException{
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(ProjectAddOnEntry.COLUMN_PROJECT_Status,status);
+        values.put(ProjectAddOnEntry.COLUMN_PROJECT_DATE,date);
+        values.put(ProjectAddOnEntry.COLUMN_PROJECT_NOTES,note);
+        values.put(ProjectAddOnEntry.COLUMN_ADDON_IMG,image);
+        values.put(ProjectAddOnEntry.COLUMN_PROJECT_ID,id);
+
+        db.insert(ProjectAddOnEntry.TABLE_NAME_PROJECT,null,values);
+        db.close();
+    }
+
+    public Cursor viewProjectList(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + ProjectAddOnEntry.TABLE_NAME_PROJECT ;
+        Cursor data = db.rawQuery(query, null);
+        return data;
     }
 
 }

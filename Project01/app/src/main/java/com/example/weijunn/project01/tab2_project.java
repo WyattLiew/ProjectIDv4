@@ -1,26 +1,29 @@
 package com.example.weijunn.project01;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 
+import com.example.weijunn.project01.Project.projectList;
 import com.example.weijunn.project01.RecyclerView.RecyclerTouchListener;
 import com.example.weijunn.project01.sqlitedata.ProjectDbHelper;
 import com.example.weijunn.project01.sqlitedata.newProjectProvider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class tab2_project extends Fragment {
+
+    private static final String TAG = "tab2_project";
 
     private SQLiteDatabase sqLiteDatabase;
     private ProjectDbHelper projectDbHelper;
@@ -59,6 +62,21 @@ public class tab2_project extends Fragment {
             public void onClick(View view, int position) {
                 newProjectProvider newProjectProvider = listNewProjectProviders.get(position);
                 Toast.makeText(getActivity().getApplicationContext(), newProjectProvider.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
+                Long rowid = listNewProjectProviders.get(position).getId();
+                Cursor data = projectDbHelper.getProjectItemID(rowid);
+                Log.d(TAG,"The row id is: "+rowid);
+                int itemID = -1;
+                while (data.moveToNext()) {
+                    itemID = data.getInt(0);
+                } if (itemID > -1) {
+                    Log.d(TAG, "onItemClick: The ID is: " + itemID);
+                    Intent intent = new Intent (getActivity().getApplicationContext(),projectList.class);
+                    intent.putExtra("id",itemID);
+                    Log.d(TAG,"The row id is: "+rowid);
+                    startActivity(intent);
+
+                }
+
             }
 
             @Override
@@ -78,7 +96,7 @@ public class tab2_project extends Fragment {
 
         if (cursor.moveToFirst()) {
             do {
-                newProjectProvider newProjectProvider = new newProjectProvider(cursor.getString(0), cursor.getString(1)
+                newProjectProvider newProjectProvider = new newProjectProvider(cursor.getLong(0), cursor.getString(1)
                         , cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5)
                         , cursor.getString(6), cursor.getString(7));
                 listNewProjectProviders.add(newProjectProvider);

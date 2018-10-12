@@ -30,7 +30,7 @@
     <!-- Label for overview category of attributes in the editor [CHAR LIMIT=30] -->
     <string name="category_projectType">Project Type</string>
 
-    <!-- Label for project type of attributes in the editor [CHAR LIMIT=30] -->
+    <!-- Label for projectList type of attributes in the editor [CHAR LIMIT=30] -->
     <string name="project_type1">Project Type 1</string>
     <string name="project_type2">Project Type 2</string>
     <string name="project_type3">Project Type 3</string>
@@ -38,7 +38,7 @@
     <string name="empty_view_title_text">No data found...</string>
     <string name="empty_view_subtitle_text">Get started by adding a project</string>
 
-    <!-- Label for project pending -->
+    <!-- Label for projectList pending -->
     <string name="defect_1">1.</string>
     <string name="defect_2">2.</string>
     <string name="defect_3">3.</string>
@@ -64,7 +64,6 @@
     <!--
     For report summary projectEditor.java
     -->
-
     <string name="report_summary_location">Project location: <xliff:g example="Singapore" id="location">%s</xliff:g></string>
     <string name="report_summary_projManager">Project manager: <xliff:g example="Abang" id="projManager">%s</xliff:g></string>
     <string name="report_summary_date">Inspection date: <xliff:g example="11/12/2018" id="date">%s</xliff:g></string>
@@ -94,5 +93,11 @@
 
     <!-- Dialog button text for the option to keep editing the current pet [CHAR LIMIT=20] -->
     <string name="cancel">No</string>
+    <string name="starts_on">Starts on</string>
+    <string name="select_a_date">Select a date</string>
+
+    <string name="projectAddOn_completed">Completed</string>
+    <string name="projectAddOn_InProgress">In Progress</string>
+    <string name="projectAddOn_Deferred">Deferred</string>
 
 </resources>

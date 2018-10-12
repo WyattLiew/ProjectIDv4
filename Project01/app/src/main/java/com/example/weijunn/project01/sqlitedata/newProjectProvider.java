@@ -1,6 +1,8 @@
 package com.example.weijunn.project01.sqlitedata;
 
-public class newProjectProvider {
+import java.io.Serializable;
+
+public class newProjectProvider implements Serializable {
     private String location;
     private String name;
     private String number;
@@ -8,7 +10,7 @@ public class newProjectProvider {
     private String description;
     private String notes;
     private String date;
-    private String id;
+    private long id;
 
     public String getLocation() {
         return location;
@@ -66,15 +68,15 @@ public class newProjectProvider {
         this.date = date;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public newProjectProvider(String id, String title, String description,String name,String number,String date, String location,String notes){
+    public newProjectProvider(long id, String title, String description,String name,String number,String date, String location,String notes){
         this.id =id;
         this.title = title;
         this.description =description;
