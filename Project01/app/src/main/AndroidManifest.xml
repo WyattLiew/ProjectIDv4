@@ -59,9 +59,6 @@
         <activity
             android:name=".Project.projectAddOn"
             android:label="Project Add On">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Project.projectList" />
 
         </activity>
 

@@ -45,6 +45,10 @@ public class projectList extends AppCompatActivity {
 
         View emptyView = findViewById(R.id.project_empty_view);
 
+        Intent intent = getIntent();
+        selectedID = intent.getIntExtra("id",-1);
+        Log.d(TAG,"Selected ID is: "+selectedID);
+
         initObject();
 
         if (listNewProjectProviders.isEmpty()) {
@@ -55,12 +59,7 @@ public class projectList extends AppCompatActivity {
             projectRecyclerView.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
         }
-
-        Intent intent = getIntent();
-        selectedID = intent.getIntExtra("id",-1);
-        Log.d(TAG,"Selected ID is: "+selectedID);
-
-
+        
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.projectList_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +77,7 @@ public class projectList extends AppCompatActivity {
 
         projectDbHelper = new ProjectDbHelper(this);
         sqLiteDatabase = projectDbHelper.getReadableDatabase();
-        cursor = projectDbHelper.viewProjectList();
+        cursor = projectDbHelper.viewProjectList(selectedID);
 
         if (cursor.moveToFirst()) {
             do {

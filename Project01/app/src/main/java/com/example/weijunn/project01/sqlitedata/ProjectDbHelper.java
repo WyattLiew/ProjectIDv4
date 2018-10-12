@@ -210,9 +210,10 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Cursor viewProjectList(){
+    public Cursor viewProjectList(int pos){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + ProjectAddOnEntry.TABLE_NAME_PROJECT ;
+        String query = "SELECT * FROM " + ProjectAddOnEntry.TABLE_NAME_PROJECT +
+                " WHERE " + ProjectAddOnEntry.COLUMN_PROJECT_ID + " = '" + pos + "'";
         Cursor data = db.rawQuery(query, null);
         return data;
     }

@@ -99,6 +99,11 @@ public class projectAddOn extends AppCompatActivity{
         selectedID = intent.getIntExtra("id",-1);
            Log.d(TAG,"Selected ID is: "+selectedID);
 
+           if(getSupportActionBar()!=null){
+               getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+               getSupportActionBar().setDisplayShowHomeEnabled(true);
+           }
+
 
 
         //Check camera permission
@@ -353,6 +358,7 @@ public class projectAddOn extends AppCompatActivity{
                           // mSelectedProject = (newProjectProvider) mSpinnerProjectID.getSelectedItem();
                            mDbHelper.insert_projectAddOn(mProjectStatus,projectDate, noteString, Untils.getBytes(imgBitmap),selectedID);
                             Intent intent = new Intent(projectAddOn.this,projectList.class);
+                            intent.putExtra("id",selectedID);
                             startActivity(intent);
                         } else if (items_update[which].equals("Cancel")) {
                             dialog.dismiss();
@@ -363,6 +369,9 @@ public class projectAddOn extends AppCompatActivity{
                 return true;
 
             case android.R.id.home:
+                Intent intent = new Intent(projectAddOn.this,projectList.class);
+                intent.putExtra("id",selectedID);
+                startActivity(intent);
                 return false;
         }
         return super.onOptionsItemSelected(item);
