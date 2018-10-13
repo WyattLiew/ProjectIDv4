@@ -7,8 +7,19 @@
 
 
     <item
-    android:id="@+id/action_addon"
-    android:icon="@mipmap/ic_project_add"
-    app:showAsAction="always" />
+        android:id="@+id/action_addon"
+        android:icon="@mipmap/ic_project_add"
+        app:showAsAction="always"
+        android:title="@string/action_add_on" />
 
+    <item
+        android:id="@+id/action_update"
+        android:icon="@mipmap/ic_project_add"
+        android:title="@string/action_update"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_delete"
+        android:title="@string/action_delete"
+        app:showAsAction="never" />
 </menu>

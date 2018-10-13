@@ -1,5 +1,7 @@
 package com.example.weijunn.project01.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,16 +35,20 @@ public class projectAddOnAdapter extends RecyclerView.Adapter<projectAddOnAdapte
         return ViewHolder;
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull projectAddOnAdapter.projectViewHolder holder, int position) {
 
         int Status = mData.get(position).getStatus();
         if(Status == 0){
             holder.tv_status.setText("Completed");
+            holder.tv_status.setTextColor(Color.GREEN);
         }else if(Status == 1){
             holder.tv_status.setText("In Progress");
+            holder.tv_status.setTextColor(Color.rgb(225, 237, 59));
         }else{
             holder.tv_status.setText("Deferred");
+            holder.tv_status.setTextColor(Color.RED);
         }
 
        // holder.tv_status.setText(mData.get(position).getStatus());

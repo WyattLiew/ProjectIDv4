@@ -88,16 +88,21 @@
     <!--Dialog message when user is deleting the data [CHAR LIMIT=NONE] -->
     <string name="delete_dialog_msg">Are you sure that you want to permanently delete the selected item?</string>
 
-    <!-- Dialog button text for the option to discard a user's changes [CHAR LIMIT=20] -->
+    <!-- Dialog button text for the option to discard a user's changes -->
     <string name="delete">Yes</string>
 
-    <!-- Dialog button text for the option to keep editing the current pet [CHAR LIMIT=20] -->
+    <!-- Dialog button text for the option to keep editing the current data -->
     <string name="cancel">No</string>
+
     <string name="starts_on">Starts on</string>
     <string name="select_a_date">Select a date</string>
 
+    <!-- Label for projectList type of attributes in the Spinner -->
     <string name="projectAddOn_completed">Completed</string>
     <string name="projectAddOn_InProgress">In Progress</string>
     <string name="projectAddOn_Deferred">Deferred</string>
+
+
+    <string name="action_add_on">Action Add On</string>
 
 </resources>

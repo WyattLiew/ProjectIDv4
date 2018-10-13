@@ -266,48 +266,6 @@ public class defectEditor extends AppCompatActivity {
             }
         }
     }
-/** Insert data Spare
-    private void insert_Pending(){
-        String locationString = mProjectLocation.getText().toString().trim();
-        String conNameString = mContactName.getText().toString().trim();
-        String conNumString = mContactNumber.getText().toString().trim();
-        int conNumInt = Integer.parseInt(conNumString);
-        String defect1String = mDefect1.getText().toString().trim();
-        String defect2String = mDefect2.getText().toString().trim();
-        String defect3String = mDefect3.getText().toString().trim();
-        String penCommentString = mPendingComment.getText().toString().trim();
-        Bitmap imgBitmap = ((BitmapDrawable)projectImage.getDrawable()).getBitmap();
-
-        ProjectDbHelper mDbHelper = new ProjectDbHelper(this);
-        //Get the database in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-         //Create a ContentValues object where column names are the keys,
-         // and Toto's pending attributes are the values
-
-        ContentValues values = new ContentValues();
-        values.put(ProjectDbHelper.COLUMN_PROJECT_LOCATION, locationString);
-        values.put(ProjectDbHelper.COLUMN_CONTACT_NAME, conNameString);
-        values.put(ProjectDbHelper.COLUMN_CONTACT_NUMBER, conNumInt);
-        values.put(ProjectDbHelper.COLUMN_DEFECT_1, defect1String);
-        values.put(ProjectDbHelper.COLUMN_DEFECT_2, defect2String);
-        values.put(ProjectDbHelper.COLUMN_DEFECT_3, defect3String);
-        values.put(ProjectDbHelper.COLUMN_DEFECT_COMMENTS, penCommentString);
-        values.put(ProjectDbHelper.COLUMN_DEFECT_IMG,imgBitmap);
-
-        // Insert a new row for Toto in the database, returning the ID of that new row.
-        long dbInsert = db.insert(ProjectDbHelper.TABLE_NAME_PENDING,null,values);
-
-        if(dbInsert != -1){
-            Toast.makeText(this,"New row added, new row id: " + dbInsert, Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(this,"Error ..",Toast.LENGTH_SHORT).show();
-        }
-
-        db.close();
-
-    }
- **/
 
     private void setupSpinner() {
         // Create adapter for spinner. The list options are from the String array it will use
@@ -737,19 +695,19 @@ public class defectEditor extends AppCompatActivity {
     private void checkEmptyEditText(String locationString,String conNameString,String conNumInt,String projManager){
 
         if(TextUtils.isEmpty(locationString)){
-            mProjectLocation.setError("Your message");
+            mProjectLocation.setError("Please fill in the blank.");
             return;
         }
         if(TextUtils.isEmpty(conNameString)){
-            mContactName.setError("Your message");
+            mContactName.setError("Please fill in the blank.");
             return;
         }
         if(TextUtils.isEmpty(conNumInt)){
-            mContactNumber.setError("Your message");
+            mContactNumber.setError("Please fill in the blank.");
             return;
         }
         if(TextUtils.isEmpty(projManager)){
-            mProjectManager.setError("Your message");
+            mProjectManager.setError("Please fill in the blank.");
             return;
         }
     }

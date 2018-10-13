@@ -10,15 +10,18 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -28,6 +31,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.weijunn.project01.R;
+import com.example.weijunn.project01.defectEditor;
 import com.example.weijunn.project01.sqlitedata.ProjectDbHelper;
 import com.example.weijunn.project01.sqlitedata.Untils;
 import com.example.weijunn.project01.sqlitedata.newProjectProvider;
@@ -65,14 +70,18 @@ public class projectAddOn extends AppCompatActivity{
     SQLiteDatabase sqLiteDatabase;
     ProjectDbHelper mDbHelper;
 
-    private int mProjectStatus = 0,selectedID;
+    //update data
+    private String  selectednotes,selectedprojDate;
+    private Bitmap selectedImage;
+    private int HideMenu,selectedStatus,selectedID,selectedProjectID;
+    private boolean HIDE_MENU =false;
+
+
+    private int mProjectStatus = 0;
 
     private Spinner mProjectStatusSpinner;
-    private Spinner mSpinnerProjectID;
-    private SpinnerProjectAdapter mAdapter;
 
-    //project id
-    private newProjectProvider mSelectedProject;
+
 
     //Camera
     ImageView projectAddOnImage;
@@ -86,6 +95,17 @@ public class projectAddOn extends AppCompatActivity{
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     String date ="Select a date";
 
+    //Warn the user about unsaved changes
+    private boolean mPendingHasChanged = false;
+
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            mPendingHasChanged = true;
+            return false;
+        }
+    };
+
        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,11 +113,13 @@ public class projectAddOn extends AppCompatActivity{
 
         initId();
         initDate();
-        setupSpinner();
+        //update data
+        initUpdate();
 
-        Intent intent = getIntent();
-        selectedID = intent.getIntExtra("id",-1);
-           Log.d(TAG,"Selected ID is: "+selectedID);
+        setupSpinner();
+           //Check unsaved changes
+           initCheckUnsavedChanges();
+
 
            if(getSupportActionBar()!=null){
                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -120,6 +142,22 @@ public class projectAddOn extends AppCompatActivity{
                 SelectImage();
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        if (!mPendingHasChanged) {
+            super.onBackPressed();
+            return;
+        }
+
+        DialogInterface.OnClickListener discardButtonClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                };
+        showUnsavedChangesDialog(discardButtonClickListener);
     }
 
     public void initId(){
@@ -280,6 +318,17 @@ public class projectAddOn extends AppCompatActivity{
         // Apply the adapter to the spinner
         mProjectStatusSpinner.setAdapter(projectTypeSpinnerAdapter);
 
+        if(selectedStatus == 0) {
+            int selectionPosition = projectTypeSpinnerAdapter.getPosition("Completed");
+            mProjectStatusSpinner.setSelection(selectionPosition);
+        }else if(selectedStatus == 1){
+            int selectionPosition = projectTypeSpinnerAdapter.getPosition("In Progress");
+            mProjectStatusSpinner.setSelection(selectionPosition);
+        }else{
+            int selectionPosition = projectTypeSpinnerAdapter.getPosition("Deferred");
+            mProjectStatusSpinner.setSelection(selectionPosition);
+        }
+
         // Set the integer mSelected to the constant values
         mProjectStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -332,6 +381,73 @@ public class projectAddOn extends AppCompatActivity{
         };
     }
 
+    public void initUpdate() {
+        Intent receivedIntent = getIntent();
+        selectedID = receivedIntent.getIntExtra("id",-1);
+        selectedProjectID = receivedIntent.getIntExtra("projectId",-1);
+        selectedStatus = receivedIntent.getIntExtra("status",0);
+        selectednotes = receivedIntent.getStringExtra("notes");
+        HideMenu = receivedIntent.getIntExtra("HideMenu",0);
+
+        if(HideMenu ==1) {
+            byte[] bytes = receivedIntent.getByteArrayExtra("projImage");
+            selectedImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            selectedprojDate = receivedIntent.getStringExtra("date");
+            mProjectAddOnDate.setText(selectedprojDate);
+            selectedProjectID = receivedIntent.getIntExtra("projectId",-1);
+        }
+
+
+
+        projectAddOnImage.setImageBitmap(selectedImage);
+        mProjectAddOnNotes.setText(selectednotes);
+
+
+        // Hide save menu
+        if(HideMenu == 1){
+            HIDE_MENU = true;
+        }
+    }
+
+    public void initCheckUnsavedChanges(){
+        mProjectAddOnDate.setOnTouchListener(mTouchListener);
+        projectAddOnImage.setOnTouchListener(mTouchListener);
+        mProjectAddOnNotes.setOnTouchListener(mTouchListener);
+        mProjectStatusSpinner.setOnTouchListener(mTouchListener);
+    }
+    private void showUnsavedChangesDialog(DialogInterface.OnClickListener discardButtonClickListener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.unsaved_changes_dialog_msg);
+        builder.setPositiveButton(R.string.discard,  discardButtonClickListener);
+        builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(dialog != null){
+                    dialog.dismiss();
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void showDeleteDialog(DialogInterface.OnClickListener deleteButtonClickListener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete,  deleteButtonClickListener);
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(dialog != null){
+                    dialog.dismiss();
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
@@ -341,25 +457,79 @@ public class projectAddOn extends AppCompatActivity{
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if(Build.VERSION.SDK_INT > 11) {
+            invalidateOptionsMenu();
+            if (HIDE_MENU) {
+                menu.findItem(R.id.action_update).setVisible(true);
+                menu.findItem(R.id.action_addon).setVisible(false);
+                menu.findItem(R.id.action_delete).setVisible(true);
+            }else {
+                menu.findItem(R.id.action_update).setVisible(false);
+                menu.findItem(R.id.action_addon).setVisible(true);
+                menu.findItem(R.id.action_delete).setVisible(false);
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_addon:
-                final CharSequence[] items_update = {"Save", "Cancel"};
+                final CharSequence[] items_add = {"Save", "Cancel"};
+                AlertDialog.Builder builder_add = new AlertDialog.Builder(projectAddOn.this);
+                builder_add.setTitle("Select options");
+                builder_add.setItems(items_add, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (items_add[which].equals("Save")) {
+                            String noteString = mProjectAddOnNotes.getText().toString().trim();
+                            String projectDate = mProjectAddOnDate.getText().toString().trim();
+                            Bitmap imgBitmap = ((BitmapDrawable)projectAddOnImage.getDrawable()).getBitmap();
+                          // mSelectedProject = (newProjectProvider) mSpinnerProjectID.getSelectedItem();
+                            if(imgBitmap == null){
+                                Toast.makeText(projectAddOn.this,"Image cannot be null.",Toast.LENGTH_SHORT).show();
+                            }else if(projectDate.matches(date)){
+                                Toast.makeText(projectAddOn.this,"Please select a date.",Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                mDbHelper.insert_projectAddOn(mProjectStatus, projectDate, noteString, Untils.getBytes(imgBitmap), selectedProjectID);
+                                Intent intent = new Intent(projectAddOn.this, projectList.class);
+                                intent.putExtra("id", selectedProjectID);
+                                startActivity(intent);
+                            }
+                        } else if (items_add[which].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder_add.show();
+                return true;
+            case R.id.action_update:
+                final CharSequence[] items_update = {"Update", "Cancel"};
                 AlertDialog.Builder builder_update = new AlertDialog.Builder(projectAddOn.this);
                 builder_update.setTitle("Select options");
                 builder_update.setItems(items_update, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (items_update[which].equals("Save")) {
+                        if (items_update[which].equals("Update")) {
                             String noteString = mProjectAddOnNotes.getText().toString().trim();
                             String projectDate = mProjectAddOnDate.getText().toString().trim();
                             Bitmap imgBitmap = ((BitmapDrawable)projectAddOnImage.getDrawable()).getBitmap();
-                          // mSelectedProject = (newProjectProvider) mSpinnerProjectID.getSelectedItem();
-                           mDbHelper.insert_projectAddOn(mProjectStatus,projectDate, noteString, Untils.getBytes(imgBitmap),selectedID);
-                            Intent intent = new Intent(projectAddOn.this,projectList.class);
-                            intent.putExtra("id",selectedID);
-                            startActivity(intent);
+                            // mSelectedProject = (newProjectProvider) mSpinnerProjectID.getSelectedItem();
+                            if(imgBitmap == null){
+                                Toast.makeText(projectAddOn.this,"Image cannot be null.",Toast.LENGTH_SHORT).show();
+                            }else if(projectDate.matches(date)){
+                                Toast.makeText(projectAddOn.this,"Please select a date.",Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                mDbHelper.update_projectAddOn(selectedID, mProjectStatus, projectDate, noteString, Untils.getBytes(imgBitmap), selectedProjectID);
+                                Intent intent = new Intent(projectAddOn.this, projectList.class);
+                                intent.putExtra("id", selectedProjectID);
+                                startActivity(intent);
+                            }
                         } else if (items_update[which].equals("Cancel")) {
                             dialog.dismiss();
                         }
@@ -368,11 +538,42 @@ public class projectAddOn extends AppCompatActivity{
                 builder_update.show();
                 return true;
 
+            // Respond to a click on the "Delete" menu option
+            case R.id.action_delete:
+                DialogInterface.OnClickListener deleteButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mDbHelper.delete_projectAddOn(selectedID);
+                                Intent intent = new Intent(projectAddOn.this, projectList.class);
+                                intent.putExtra("id", selectedProjectID);
+                                startActivity(intent);
+                            }
+                        };
+                showDeleteDialog(deleteButtonClickListener);
+                return true;
+
             case android.R.id.home:
-                Intent intent = new Intent(projectAddOn.this,projectList.class);
-                intent.putExtra("id",selectedID);
-                startActivity(intent);
-                return false;
+                if(!mPendingHasChanged){
+                    Intent intent = new Intent(projectAddOn.this,projectList.class);
+                    intent.putExtra("id",selectedProjectID);
+                    startActivity(intent);
+                    return true;
+                }
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // User clicked "Discard" button, navigate to parent activity.
+                                Intent intent = new Intent(projectAddOn.this,projectList.class);
+                                intent.putExtra("id",selectedProjectID);
+                                startActivity(intent);
+                            }
+                        };
+
+                // Show a dialog that notifies the user they have unsaved changes
+                showUnsavedChangesDialog(discardButtonClickListener);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

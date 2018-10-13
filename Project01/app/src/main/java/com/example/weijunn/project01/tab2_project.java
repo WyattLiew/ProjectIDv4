@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -35,7 +36,7 @@ public class tab2_project extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab2_project, container, false);
 
@@ -60,8 +61,6 @@ public class tab2_project extends Fragment {
         projectRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity().getApplicationContext(), projectRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                newProjectProvider newProjectProvider = listNewProjectProviders.get(position);
-                Toast.makeText(getActivity().getApplicationContext(), newProjectProvider.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
                 Long rowid = listNewProjectProviders.get(position).getId();
                 Cursor data = projectDbHelper.getProjectItemID(rowid);
                 Log.d(TAG,"The row id is: "+rowid);
@@ -82,6 +81,45 @@ public class tab2_project extends Fragment {
             @Override
             public void onLongClick(View view, int position) {
 
+                String title = listNewProjectProviders.get(position).getTitle();
+                String description = listNewProjectProviders.get(position).getDescription();
+                String conName = listNewProjectProviders.get(position).getName();
+                String conNum = listNewProjectProviders.get(position).getNumber();
+                String location =listNewProjectProviders.get(position).getLocation();
+                String date = listNewProjectProviders.get(position).getDate();
+                String notes = listNewProjectProviders.get(position).getNotes();
+
+                int HideMenu = 1;
+                Long rowid = listNewProjectProviders.get(position).getId();
+                Cursor data = projectDbHelper.getProjectItemID(rowid);
+                Log.d(TAG,"The row id is: "+rowid);
+
+                int itemID = -1;
+                while (data.moveToNext()) {
+                    itemID = data.getInt(0);
+                    title = data.getString(1);
+                    description = data.getString(2);
+                    conName = data.getString(3);
+                    conNum = data.getString(4);
+                    location = data.getString(6);
+                    date = data.getString(5);
+                    notes = data.getString(7);
+
+                } if (itemID > -1) {
+                    Log.d(TAG, "onItemClick: The ID is: " + itemID);
+                    Intent intent = new Intent (getActivity().getApplicationContext(),projectEditor.class);
+                    intent.putExtra("id",itemID);
+                    intent.putExtra("title",title);
+                    intent.putExtra("description",description);
+                    intent.putExtra("conName",conName);
+                    intent.putExtra("conNum",conNum);
+                    intent.putExtra("location",location);
+                    intent.putExtra("date",date);
+                    intent.putExtra("notes",notes);
+                    intent.putExtra("HideMenu", HideMenu);
+                    Log.d(TAG,"The row id is: "+rowid);
+                    startActivity(intent);
+                }
             }
         }));
 

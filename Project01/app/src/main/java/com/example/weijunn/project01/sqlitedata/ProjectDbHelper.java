@@ -162,7 +162,7 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
     /** pending Editor End> **/
 
     /** Project Editor Start> **/
-    public void insert_project(String location, String conName, int conNum,String date,String description,String title,String note) throws SQLException{
+    public void insert_project(String location, String conName, String conNum,String date,String description,String title,String note) throws SQLException{
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -176,6 +176,28 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
 
 
         db.insert(ProjectEntry.TABLE_NAME_PROJECT,null,values);
+        db.close();
+    }
+    public void update_project(int id,String location, String conName, String conNum,String date,String description,String title,String note) throws SQLException{
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(ProjectEntry.COLUMN_PROJECT_TITLE, title);
+        values.put(ProjectEntry.COLUMN_PROJECT_DESCRIPTION, description);
+        values.put(ProjectEntry.COLUMN_PROJECT_DATE, date);
+        values.put(ProjectEntry.COLUMN_PROJECT_LOCATION, location);
+        values.put(ProjectEntry.COLUMN_CONTACT_NAME, conName);
+        values.put(ProjectEntry.COLUMN_CONTACT_NUMBER, conNum);
+        values.put(ProjectEntry.COLUMN_PROJECT_NOTES, note);
+
+        db.update(ProjectEntry.TABLE_NAME_PROJECT,values,"_id="+id,null);
+        db.close();
+    }
+
+    public void delete_project(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(ProjectEntry.TABLE_NAME_PROJECT,"_id="+id, null);
         db.close();
     }
 
@@ -196,7 +218,7 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
     /** Project Editor END> **/
 
     /** Project Addon Start> **/
-    public void insert_projectAddOn(int status,String date,String note,byte[] image,int id) throws SQLException{
+    public void insert_projectAddOn(int status,String date,String note,byte[] image,int projectid) throws SQLException{
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -204,9 +226,23 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
         values.put(ProjectAddOnEntry.COLUMN_PROJECT_DATE,date);
         values.put(ProjectAddOnEntry.COLUMN_PROJECT_NOTES,note);
         values.put(ProjectAddOnEntry.COLUMN_ADDON_IMG,image);
-        values.put(ProjectAddOnEntry.COLUMN_PROJECT_ID,id);
+        values.put(ProjectAddOnEntry.COLUMN_PROJECT_ID,projectid);
 
         db.insert(ProjectAddOnEntry.TABLE_NAME_PROJECT,null,values);
+        db.close();
+    }
+
+    public void update_projectAddOn(int id,int status,String date,String note,byte[] image,int projectid) throws SQLException{
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(ProjectAddOnEntry.COLUMN_PROJECT_Status,status);
+        values.put(ProjectAddOnEntry.COLUMN_PROJECT_DATE,date);
+        values.put(ProjectAddOnEntry.COLUMN_PROJECT_NOTES,note);
+        values.put(ProjectAddOnEntry.COLUMN_ADDON_IMG,image);
+        values.put(ProjectAddOnEntry.COLUMN_PROJECT_ID,projectid);
+
+        db.update(ProjectAddOnEntry.TABLE_NAME_PROJECT,values,"_id="+id,null);
         db.close();
     }
 
@@ -218,4 +254,27 @@ public class ProjectDbHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    public Cursor getProjectAddOnItemID(long pos){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + ProjectAddOnEntry.TABLE_NAME_PROJECT +
+                " WHERE " + ProjectAddOnEntry._ID + " = '" + pos + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
+
+    public void delete_projectAddOn(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(ProjectAddOnEntry.TABLE_NAME_PROJECT,"_id="+id, null);
+        db.close();
+    }
+
+    public void delete_allProjectAddOn(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(ProjectAddOnEntry.TABLE_NAME_PROJECT,"project_ID="+id, null);
+        db.close();
+    }
+
+    /** Project Addon END> **/
 }
